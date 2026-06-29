@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Kiểm Tra Trắc Nghiệm - Ms Lê Hằng English</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #8854C0;
+            --accent-color: #FDCB6E;
+            --teal-color: #00C9A7;
+            --correct-color: #00D26A;
+            --wrong-color: #FF4757;
+            --text-color: #2D3436;
+            --card-bg: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Quicksand', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Nền chuyển động Loang màu liên tục mượt mà + Lớp SVG họa tiết lơ lửng độc lập */
+        body {
+            background: linear-gradient(-45deg, #8854C0, #FDCB6E, #00C9A7, #FF7675);
+            background-size: 400% 400%;
+            animation: gradientMove 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+            opacity: 0.14;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill='%23ffffff'%3E%3Cpath d='M20 20 L30 20 L30 30 L20 30 Z M70 20 A 8 8 0 1 1 70 36 A 8 8 0 1 1 70 20 M50 70 L55 80 L65 80 L57 86 L60 96 L50 90 L40 96 L43 86 L35 80 L45 80 Z' /%3E%3Cpath d='M10 70 C 15 60, 30 60, 35 70 C 40 80, 25 90, 10 70 Z M85 75 A 10 10 0 1 1 85 74 Z' /%3E%3C/g%3E%3C/svg%3E");
+            animation: patternFloat 28s linear infinite;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes patternFloat {
+            0% { background-position: 0 0; }
+            100% { background-position: 500px 1000px; }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 760px;
+            z-index: 1;
+        }
+
+        /* Heading nhỏ gọn, tinh tế không chiếm diện tích */
+        header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        header h5 {
+            font-size: 1.05rem;
+            color: #FFFFFF;
+            background: rgba(0, 0, 0, 0.15);
+            display: inline-block;
+            padding: 5px 16px;
+            border-radius: 30px;
+            backdrop-filter: blur(5px);
+            font-weight: 700;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Khung thông báo nhắc nhở cực kỳ quan trọng */
+        .warning-box {
+            background: #FFEAA7;
+            border: 4px solid #FDCB6E;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 0 #E17055;
+            color: #2D3436;
+            text-align: center;
+        }
+
+        .warning-box h4 {
+            font-size: 1.25rem;
+            color: #D63031;
+            margin-bottom: 8px;
+            font-weight: 900;
+        }
+
+        .warning-box p {
+            font-size: 0.98rem;
+            line-height: 1.5;
+            font-weight: 700;
+        }
+
+        .warning-box em {
+            display: block;
+            margin-top: 10px;
+            color: #6C5CE7;
+            font-style: normal;
+            font-weight: 900;
+        }
+
+        /* Bố cục Thẻ Bài (Card) câu hỏi nổi bật giữa màn hình */
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 22px;
+            padding: 24px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 0 rgba(0,0,0,0.1);
+            border: 3px solid #E0E0E0;
+            transition: transform 0.2s ease;
+        }
+
+        .card-top-info {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #A0A0A0;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-color);
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        /* Thiết lập danh sách nút chọn đáp án 3D dày */
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: #FFFFFF;
+            border: 3px solid #E0E0E0;
+            border-radius: 18px;
+            padding: 14px 20px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-color);
+            text-align: left;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #E0E0E0;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            width: 100%;
+        }
+
+        .option-btn:hover:not(.disabled) {
+            transform: scale(1.01) translateY(-2px);
+            box-shadow: 0 8px 0 #D0D0D0;
+            background: #FAEDFF;
+        }
+
+        .option-btn:active:not(.disabled) {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #D0D0D0;
+        }
+
+        /* Màu sắc Đúng / Sai theo thiết lập bắt buộc */
+        .option-btn.correct {
+            background: var(--correct-color) !important;
+            border-color: #00B359 !important;
+            color: white !important;
+            box-shadow: 0 6px 0 #008040 !important;
+        }
+
+        .option-btn.wrong {
+            background: var(--wrong-color) !important;
+            border-color: #E03847 !important;
+            color: white !important;
+            box-shadow: 0 6px 0 #B32431 !important;
+        }
+
+        .option-btn.disabled {
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* Hiệu ứng Shake rung lắc khi chọn sai đáp án */
+        @keyframes shakeEffect {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+
+        .shake-animation {
+            animation: shakeEffect 0.4s ease-in-out;
+        }
+
+        /* Khung hiển thị giải thích tự động mở bung tức thì */
+        .explanation-box {
+            margin-top: 20px;
+            background: #F3EAFE;
+            border-left: 6px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 15px 18px;
+            display: none;
+            animation: slideDownEffect 0.4s ease forwards;
+        }
+
+        @keyframes slideDownEffect {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .explanation-title {
+            color: var(--primary-color);
+            font-weight: 900;
+            font-size: 1.05rem;
+            margin-bottom: 8px;
+        }
+
+        .explanation-content {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #333333;
+        }
+
+        .explanation-content strong {
+            color: #000000;
+        }
+
+        /* Nút nộp bài tổng hợp điểm cuối trang */
+        .submit-section {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .submit-btn {
+            background: #6C5CE7;
+            color: white;
+            border: none;
+            padding: 16px 45px;
+            font-size: 1.3rem;
+            font-weight: 900;
+            border-radius: 22px;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #4834D4;
+            transition: all 0.1s;
+        }
+
+        .submit-btn:hover {
+            background: #5F27CD;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #4834D4;
+        }
+
+        .submit-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #4834D4;
+        }
+
+        /* Canvas cấu hình hạt pháo giấy Confetti bay */
+        #confetti-canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* Giao diện Popup thông báo kết quả kèm lời khuyên */
+        .modal-mask {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal-mask.active { opacity: 1; pointer-events: auto; }
+        .modal-container {
+            background: white;
+            border-radius: 25px;
+            padding: 35px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+            border: 4px solid var(--accent-color);
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+        .modal-mask.active .modal-container { transform: scale(1); }
+        .modal-score { font-size: 3rem; font-weight: 900; color: var(--primary-color); margin: 15px 0; }
+        .modal-feedback { font-size: 1.1rem; color: var(--text-color); font-weight: 700; line-height: 1.5; margin-bottom: 25px; }
+        .modal-btn {
+            background: var(--teal-color);
+            color: white; border: none; padding: 12px 30px;
+            font-size: 1.05rem; font-weight: 700; border-radius: 14px;
+            box-shadow: 0 4px 0 #00A387; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="container">
+        <header>
+            <h5>Giáo viên tạo: Ms Lê Hằng English</h5>
+        </header>
+
+        <div class="warning-box">
+            <h4>⚠️ LỜI NHẮC CỰC KỲ QUAN TRỌNG ⚠️</h4>
+            <p>Chỉ có đọc kỹ giải thích ngay sau mỗi câu, sau đó ghi lại từ vựng/cấu trúc mới vào vở để học thì mới thực sự giỏi lên.</p>
+            <p>Làm cho xong mà không đọc giải thích hay đọc qua loa không ghi chép thì chỉ tốn thời gian vô ích!</p>
+            <em>* Kéo tới đâu, làm tới đó! *</em>
+        </div>
+
+        <div id="quiz-container"></div>
+
+        <div class="submit-section">
+            <button class="submit-btn" onclick="calculateFinalScore()">NỘP BÀI CHẤM ĐIỂM 🎉</button>
+        </div>
+    </div>
+
+    <div class="modal-mask" id="score-modal">
+        <div class="modal-container">
+            <h2>🏆 TỔNG KẾT BÀI LÀM 🏆</h2>
+            <div class="modal-score" id="score-text">0 / 30</div>
+            <div class="modal-feedback" id="feedback-text">Lời khuyên của cô giáo...</div>
+            <button class="modal-btn" onclick="restartQuiz()">Làm Lại Từ Đầu 🔄</button>
+        </div>
+    </div>
+
+    <script>
+        // Hệ thống âm thanh tự tổng hợp qua Web Audio API cực kỳ thông minh
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioContext = null;
+
+        function playSoundEffect(status) {
+            try {
+                if (!audioContext) audioContext = new AudioCtx();
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+
+                if (status === 'correct') {
+                    // Âm thanh 'Ding' trong trẻo vui tai khi chọn đúng
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, audioContext.currentTime); // nốt C5
+                    osc.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.1); // nốt G5
+                    gain.gain.setValueAtTime(0.2, audioContext.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.35);
+                    osc.start(audioContext.currentTime);
+                    osc.stop(audioContext.currentTime + 0.35);
+                } else if (status === 'wrong') {
+                    // Âm thanh 'Téo teo tèo' chùng xuống hài hước khi chọn sai
+                    const now = audioContext.currentTime;
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(196, now); // G3
+                    osc.frequency.setValueAtTime(146.83, now + 0.12); // D3
+                    osc.frequency.setValueAtTime(110, now + 0.25); // A2
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+                    osc.start(now);
+                    osc.stop(now + 0.45);
+                }
+            } catch (e) { console.log("Audio Context chưa được kích hoạt từ tương tác người dùng."); }
+        }
+
+        // TOÀN VẸN 100% DỮ LIỆU ĐỀ BÀI MỚI - KHÔNG CẮT XÉN, GIẢI THÍCH 4 BƯỚC SIÊU CHI TIẾT
+        const quizDatabase = [
+            {
+                id: 1,
+                question: "John ________ on the table and called for everyone's attention.",
+                options: ["held", "placed", "put", "stood"],
+                correct: "stood",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> John đứng trên bàn và kêu gọi sự chú ý của mọi người.<br><strong>2. Phân tích nghĩa 4 đáp án:</strong><br>A. held (v): cầm, nắm (quá khứ của hold)<br>B. placed (v): đặt, để một vật nào đó<br>C. put (v): đặt, để một vật nào đó<br>D. stood (v): đứng (quá khứ của stand)<br><strong>3. Tại sao chọn D:</strong> Dựa vào cụm từ <em>'on the table'</em> và hành động kéo theo sau <em>'called for everyone's attention'</em> (gây chú ý), việc trèo lên và đứng vững trên mặt bàn là hành động hợp ngữ cảnh nhất.<br><strong>4. Tại sao các từ khác sai:</strong> Các động từ 'held', 'placed', 'put' đều là ngoại động từ (transitive verbs), bắt buộc phải có một tân ngữ chỉ vật bị tác động đi liền phía sau, không thể đi trực tiếp với giới từ 'on' như vậy."
+            },
+            {
+                id: 2,
+                question: "We have decided to ________ a new industrial zone to encourage more businesses to move into the area.",
+                options: ["evolve", "grow up", "develop", "exist"],
+                correct: "develop",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Chúng tôi đã quyết định phát triển một khu công nghiệp mới để khuyến khích nhiều doanh nghiệp chuyển vào khu vực này.<br><strong>2. Phân tích nghĩa 4 đáp án:</strong><br>A. evolve (v): tiến hóa, tự phát triển dần lên<br>B. grow up (v): lớn lên, trưởng thành (dùng cho con người)<br>C. develop (v): phát triển, xây dựng, mở rộng quy hoạch<br>D. exist (v): tồn tại đơn thuần<br><strong>3. Tại sao chọn C:</strong> Ta có cụm từ kết hợp từ vựng cố định (collocation) vô cùng phổ biến là <em>'develop an industrial zone'</em> dùng để chỉ hoạt động quy hoạch, xây dựng và phát triển một khu công nghiệp mới.<br><strong>4. Tại sao các từ khác sai:</strong> 'evolve' chỉ tiến hóa tự nhiên; 'grow up' chỉ quá trình sinh học lớn lên của con người; 'exist' là nội động từ mang nghĩa tồn tại, không đi kèm tân ngữ trực tiếp ở phía sau."
+            },
+            {
+                id: 3,
+                question: "The word put rhymes with ________.",
+                options: ["suit", "cut", "foot", "blood"],
+                correct: "foot",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Từ 'put' vần (rhyme) với từ nào dưới đây?<br><strong>2. Phân tích ngữ âm phát âm 4 đáp án:</strong><br>A. suit /suːt/ hoặc /sjuːt/ (nguyên âm u dài)<br>B. cut /kʌt/ (nguyên âm ʌ ngắn)<br>C. foot /fʊt/ (nguyên âm ʊ ngắn)<br>D. blood /blʌd/ (nguyên âm ʌ ngắn)<br><strong>3. Tại sao chọn C:</strong> Từ 'put' được phát âm quốc tế là /pʊt/, sở hữu nguyên âm /ʊ/ ngắn giống hệt với cách phát âm của từ 'foot' /fʊt/. Do đó hai từ này có sự đồng điệu hiệp vần với nhau.<br><strong>4. Tại sao các từ khác sai:</strong> 'suit' mang âm u dài; 'cut' và 'blood' mang âm á (/ʌ/) nên khi đọc lên không hề tạo ra âm hưởng bắt vần với 'put'."
+            },
+            {
+                id: 4,
+                question: "I never met our old school principal, but the new one seems very ________.",
+                options: ["approachment", "accessible/approachable", "misapproach", "unapproach"],
+                correct: "accessible/approachable", // Chấp nhận từ gốc 'approachable' trong đề
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Tôi chưa bao giờ gặp vị hiệu trưởng cũ của trường, nhưng người mới có vẻ rất dễ gần, thân thiện.<br><strong>2. Phân tích nghĩa và từ loại 4 đáp án:</strong><br>A. approachment (n): sự tiếp cận (từ loại sai)<br>B. approachable (adj): dễ tiếp cận, dễ gần, thân thiện<br>C. misapproach (n/v): tiếp cận sai cách<br>D. unapproach (từ không có nghĩa, đúng phải là unapproachable)<br><strong>3. Tại sao chọn B:</strong> Vị trí đứng sau hệ động từ <em>'seems'</em> và trạng từ nhấn mạnh <em>'very'</em> bắt buộc phải là một tính từ mô tả tính chất tính cách con người. 'Approachable' mang nghĩa dễ tính, thân thiện, dễ nói chuyện.<br><strong>4. Tại sao các từ khác sai:</strong> A và C sai từ loại danh từ động từ; D là từ bịa sai quy tắc cấu tạo từ (word formation)."
+            },
+            {
+                id: 5,
+                question: "We don't encourage ________ social behaviour such as vandalism.",
+                options: ["anti-", "dis-", "pre-", "un-"],
+                correct: "anti-",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Chúng tôi không khuyến khích các hành vi chống đối xã hội chẳng hạn như nạn phá hoại của công.<br><strong>2. Phân tích ý nghĩa 4 tiền tố phủ định:</strong><br>A. anti- (prefix): chống lại, bài xích<br>B. dis- (prefix): không, đảo ngược<br>C. pre- (prefix): trước mốc thời gian<br>D. un- (prefix): không<br><strong>3. Tại sao chọn A:</strong> Ta có thuật ngữ ghép cố định trong tiếng Anh xã hội học là <em>'anti-social behaviour'</em> nghĩa là những hành vi ngỗ ngược, phá hoại, gây rối, chống đối lại lợi ích chung của cộng đồng xã hội.<br><strong>4. Tại sao các từ khác sai:</strong> Các tiền tố dis-, pre-, un- không kết hợp với từ 'social' để mô tả các hành vi mang tính chất phá hoại phá phách pháp luật như 'vandalism'."
+            },
+            {
+                id: 6,
+                question: "The word organise is a ________ of the word arrange.",
+                options: ["antonym", "corpus", "collocation", "synonym"],
+                correct: "synonym",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Từ 'organise' (tổ chức) là một từ đồng nghĩa của từ 'arrange' (sắp xếp).<br><strong>2. Phân tích nghĩa 4 đáp án:</strong><br>A. antonym (n): từ trái nghĩa<br>B. corpus (n): tuyển tập dữ liệu ngôn ngữ<br>C. collocation (n): tập hợp từ hay đi liền nhau theo thói quen bản xứ<br>D. synonym (n): từ đồng nghĩa<br><strong>3. Tại sao chọn D:</strong> Bản chất ngữ nghĩa của hai động từ 'organise' và 'arrange' đều xoay quanh việc sắp đặt, chuẩn bị, tổ chức công việc đồ vật gọn gàng nên chúng là quan hệ đồng nghĩa (synonym).<br><strong>4. Tại sao các từ khác sai:</strong> Chúng không đối nghịch nhau nên không là antonym; các khái niệm ngôn ngữ học khác không phản ánh đúng mối quan hệ ngữ nghĩa giữa hai từ này."
+            },
+            {
+                id: 7,
+                question: "There are other books on this topic but Smith's is thought to be the ________ work.",
+                options: ["definite", "definition", "definitive", "define"],
+                correct: "definitive",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Có những cuốn sách khác viết về chủ đề này nhưng tác phẩm của Smith được coi là cuốn sách hoàn chỉnh, xuất sắc và có thẩm quyền cao nhất.<br><strong>2. Phân tích nghĩa và từ loại 4 đáp án:</strong><br>A. definite (adj): rõ ràng, chắc chắn, không hoài nghi<br>B. definition (n): định nghĩa một từ vựng<br>C. definitive (adj): có tính chất cuối cùng, hoàn hảo, đáng tin cậy nhất không thể vượt qua<br>D. define (v): định nghĩa<br><strong>3. Tại sao chọn C:</strong> Cụm danh từ kết hợp <em>'the definitive work'</em> là một thuật ngữ cao cấp chỉ một công trình nghiên cứu, một cuốn sách hoàn hảo, chứa đựng thông tin đầy đủ và chính xác nhất về một lĩnh vực chuyên môn.<br><strong>4. Tại sao các từ khác sai:</strong> 'definite' mang ý nghĩa chắc chắn về mặt kế hoạch chứ không chỉ chất lượng học thuật tác phẩm; danh từ 'definition' và động từ 'define' sai cấu trúc vị trí đứng bổ nghĩa cho danh từ 'work'."
+            },
+            {
+                id: 8,
+                question: "________ many elderly people struggle to meet their everyday living expenses.",
+                options: ["Now days", "Nowday", "Nowdays", "Nowadays"],
+                correct: "Nowadays",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Ngày nay, nhiều người cao tuổi phải vật lộn vất vả để chi trả cho các khoản chi phí sinh hoạt thường nhật.<br><strong>2. Phân tích hình thái chính tả 4 đáp án:</strong><br>A. Now days (viết cách rời ra - sai chính tả)<br>B. Nowday (thiếu chữ s ở đuôi - sai chính tả)<br>C. Nowdays (viết liền nhưng thiếu ký tự 'a' ở giữa - sai chính tả)<br>D. Nowadays (adv): Ngày nay (viết đúng quy chuẩn chính tả từ điển)<br><strong>3. Tại sao chọn D:</strong> Trạng từ <em>'Nowadays'</em> viết liền có đuôi 's' luôn đứng đầu câu để mở ra bối cảnh thời gian thực tại hiện nay.<br><strong>4. Tại sao các từ khác sai:</strong> Tất cả các phương án A, B, C đều là những lỗi bẫy viết sai chính tả vô cùng kinh điển mà học sinh rất dễ mắc phải."
+            },
+            {
+                id: 9,
+                question: "You need to choose a new assignment topic - this one is not ________ to the one you chose last term.",
+                options: ["dissimilar", "insimilar", "nonsimilar", "unsimilar"],
+                correct: "dissimilar",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Con cần phải chọn một chủ đề bài tập mới - chủ đề này không có sự khác biệt so với chủ đề con đã chọn ở học kỳ trước.<br><strong>2. Phân tích tiền tố cấu tạo từ phủ định:</strong><br>A. dissimilar (adj): khác biệt, không giống (đi với giới từ to)<br>B, C, D đều là các từ sai ngữ pháp, không có thật trong hệ thống từ điển tiếng Anh.<br><strong>3. Tại sao chọn A:</strong> Để tạo từ trái nghĩa cho tính từ 'similar', quy tắc ngôn ngữ bắt buộc ta phải thêm tiền tố <em>'dis-'</em> phía trước để tạo thành 'dissimilar to'. Cụm phủ định kép 'not dissimilar to' mang nghĩa là 'quá giống nhau'.<br><strong>4. Tại sao các từ khác sai:</strong> Các tiền tố phủ định như in-, non-, un- không được phép kết hợp bừa bãi với tính từ 'similar'."
+            },
+            {
+                id: 10,
+                question: "There are several reasons ________ this change in decision.",
+                options: ["by", "for", "of", "why"],
+                correct: "for",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Có một vài lý do giải thích cho sự thay đổi trong quyết định lần này.<br><strong>2. Phân tích các giới từ đi kèm danh từ 'reasons':</strong><br>A. by (bởi); B. for (cho); C. of (của); D. why (tại sao)<br><strong>3. Tại sao chọn B:</strong> Quy tắc ngữ pháp tiếng Anh quy định danh từ reason đi với giới từ tạo cụm: <em>'reason FOR something'</em> có nghĩa là lý do, nguyên nhân cho sự việc gì.<br><strong>4. Tại sao các từ khác sai:</strong> Giới từ by và of không kết hợp với reason; từ 'why' chỉ làm từ nối đứng đầu một mệnh đề hoàn chỉnh gồm Chủ ngữ + Động từ, ở đây phía sau là cụm danh từ 'this change...' nên dùng why là sai cấu trúc."
+            },
+            {
+                id: 11,
+                question: "The lecturer ________ our attention to a large screen at the back of the room.",
+                options: ["drew", "pointed", "gave", "paid"],
+                correct: "drew",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Giảng viên đã thu hút hướng sự chú ý của chúng tôi vào một màn hình lớn ở phía cuối phòng học.<br><strong>2. Phân tích các động từ đi với attention:</strong><br>A. drew (v): kéo, thu hút (quá khứ của draw)<br>B. pointed (v): chỉ tay hướng vào<br>C. gave (v): cho tặng<br>D. paid (v): chi trả (quá khứ của pay)<br><strong>3. Tại sao chọn A:</strong> Ta áp dụng cụm kết hợp từ cố định (collocation) bắt buộc: <em>'draw someone's attention to something'</em> có nghĩa là thu hút, hướng sự chú ý của người khác vào một vật thể sự việc.<br><strong>4. Tại sao các từ khác sai:</strong> 'pointed' phải đi với giới từ at; 'paid attention TO' mang ý nghĩa tự bản thân mình tập trung chú ý lắng nghe ai chứ không mang hàm ý kéo sự chú ý của đám đông như từ 'drew'."
+            },
+            {
+                id: 12,
+                question: "This medicine should help, but if the problem ________ come and see me again.",
+                options: ["ocurs", "occurs", "recurs", "reccurs"],
+                correct: "recurs",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Thuốc này sẽ có tác dụng hỗ trợ tốt, nhưng nếu căn bệnh/vấn đề tái phát lại, hãy đến gặp lại tôi lần nữa nhé.<br><strong>2. Phân tích nghĩa và lỗi chính tả:</strong><br>A. ocurs (sai chính tả chữ c); B. occurs (v): xảy ra đơn thuần<br>C. recurs (v): lặp lại, tái diễn, tái phát; D. reccurs (sai chính tả thừa chữ c)<br><strong>3. Tại sao chọn C:</strong> Chìa khóa nằm ở trạng từ <em>'again'</em> (lại một lần nữa) ở cuối câu, biểu thị vấn đề sức khỏe này lặp lại lặp lại lần thứ hai trở đi (tái phát), do đó động từ 'recurs' (viết chính xác chỉ có 1 chữ c và 2 chữ r) là phương án hoàn hảo nhất.<br><strong>4. Tại sao các từ khác sai:</strong> A và D viết sai chính tả; B 'occurs' chỉ diễn tả sự việc nảy sinh diễn ra lần đầu tiên, không nhấn mạnh tính chất tái phát tuần hoàn."
+            },
+            {
+                id: 13,
+                question: "It is ________ likely that the government will back down and agree to the tax cuts.",
+                options: ["completely", "fully", "highly", "totally"],
+                correct: "highly",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Rất có khả năng cao là chính phủ sẽ chấp nhận rút lui và đồng ý với các phương án cắt giảm thuế.<br><strong>2. Phân tích trạng từ chỉ mức độ kết hợp:</strong><br>A. completely (adv): hoàn toàn; B. fully (adv): đầy đủ vẹn toàn<br>C. highly (adv): ở mức độ cực kỳ cao; D. totally (adv): toàn bộ hoàn toàn<br><strong>3. Tại sao chọn C:</strong> Đây là một cụm từ ghép cố định (collocation) thuộc lòng của tiếng Anh bản xứ: tính từ 'likely' (có khả năng xảy ra) luôn đi kèm với trạng từ 'highly' để tạo thành cụm <em>'highly likely'</em>.<br><strong>4. Tại sao các từ khác sai:</strong> Các trạng từ completely, fully hay totally không kết hợp tự nhiên với tính từ 'likely', điền vào làm câu văn mất đi tính bản xứ chuẩn mực."
+            },
+            {
+                id: 14,
+                question: "In 1990 the figures rose ________ a previous high of 75% to a staggering 89%.",
+                options: ["by", "from", "in", "with"],
+                correct: "from",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Vào năm 1990, các số liệu đã tăng từ mức cao trước đó là 75% lên mức đáng kinh ngạc là 89%.<br><strong>2. Phân tích giới từ mô tả số liệu tăng trưởng:</strong><br>A. by: tăng thêm một khoảng chênh lệch; B. from: bắt đầu từ điểm gốc<br>C. in: trong; D. with: với<br><strong>3. Tại sao chọn B:</strong> Cấu trúc kinh điển để mô tả sự biến động của biểu đồ toán học/số liệu tăng giảm là: <em>'rise FROM [điểm xuất phát] TO [điểm kết thúc]'</em>. Phía sau câu đã có sẵn từ 'to' làm dấu hiệu bổ trợ song hành.<br><strong>4. Tại sao các từ khác sai:</strong> Nếu chọn giới từ 'by' thì 75% phải là lượng hiệu số chênh lệch tăng thêm (ví dụ: tăng thêm 75%), trong khi văn cảnh ghi rõ 75% là mức cao cũ 'a previous high' (điểm bắt đầu)."
+            },
+            {
+                id: 15,
+                question: "The following year this figure noticeably ________ from 72% to only 55%.",
+                options: ["drop", "dropped", "dropping", "drops"],
+                correct: "dropped",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Vào năm tiếp theo sau đó, con số này đã sụt giảm một cách rõ rệt từ 72% xuống chỉ còn vẻn vẹn 55%.<br><strong>2. Phân tích dạng chia động từ:</strong><br>A. drop (v nguyên mẫu); B. dropped (v quá khứ đuôi -ed)<br>C. dropping (v-ing); D. drops (v hiện tại thêm s)<br><strong>3. Tại sao chọn B:</strong> Trạng từ thời gian chỉ mốc lịch sử cụ thể <em>'The following year'</em> (Năm tiếp theo sau mốc năm 1990 đã kể trước đó) xác định đây là một chuỗi hành động đã chấm dứt hoàn toàn trong quá khứ, câu phải chia ở thì Quá khứ đơn (dropped).<br><strong>4. Tại sao các từ khác sai:</strong> Các dạng động từ ở hiện tại (drop, drops) hoặc phân từ (dropping) hoàn toàn sai lệch quy tắc chia thì thời gian lịch sử."
+            },
+            {
+                id: 16,
+                question: "There was a ________ increase between 1989 and 2005.",
+                options: ["significant", "significantly", "slightly", "steep"],
+                correct: "significant",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Đã có một sự gia tăng đáng kể trong giai đoạn từ năm 1989 đến năm 2005.<br><strong>2. Phân tích từ loại và ý nghĩa ngữ cảnh:</strong><br>A. significant (adj): đáng kể, có tầm quan trọng lớn<br>B. significantly (adv): một cách đáng kể; C. slightly (adv): một chút nhẹ<br>D. steep (adj): dốc đứng (thường mô tả con dốc hoặc cú đổi hướng thẳng đứng)<br><strong>3. Tại sao chọn A:</strong> Vị trí đứng sau mạo từ 'a' và đứng trước bổ nghĩa trực tiếp cho danh từ <em>'increase'</em> (sự gia tăng) bắt buộc phải là một tính từ. 'Significant' thỏa mãn chính xác từ loại và ngữ nghĩa biểu đồ.<br><strong>4. Tại sao các từ khác sai:</strong> B và C là trạng từ không thể đứng bổ nghĩa trực tiếp trước danh từ; D 'steep' chỉ dùng cho tốc độ dốc đứng đột ngột cực mạnh, dùng 'significant' mô tả biểu đồ phổ biến và chuẩn mực nhất."
+            },
+            {
+                id: 17,
+                question: "The bread ________ baked in a hot oven and then put into bags ready for sale.",
+                options: ["has", "is", "were", "can"],
+                correct: "is",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Bánh mì được nướng trong lò nóng và sau đó được đóng gói vào các túi sẵn sàng để mang đi bán.<br><strong>2. Phân tích ngữ pháp thể bị động:</strong><br>A. has (có); B. is (tobe hiện tại số ít); C. were (tobe quá khứ số nhiều); D. can (có thể)<br><strong>3. Tại sao chọn B:</strong> Câu văn mô tả một quy trình sản xuất thực tế lặp đi lặp lại hàng ngày (Thì hiện tại đơn). Chủ ngữ 'The bread' là danh từ không đếm được nên được tính là số ít. Bản chất bánh mì không tự nướng được mà phải 'được nướng' (thể bị động), công thức: <em>'is + V3 (baked)'</em>.<br><strong>4. Tại sao các từ khác sai:</strong> 'has' và 'can' không cấu tạo được thể bị động nguyên bản ngữ cảnh này; 'were' sai hòa hợp chủ ngữ số ít."
+            },
+            {
+                id: 18,
+                question: "We might be able to persuade more people to use the bus, but it is ________ impossible to stop people from driving cars altogether.",
+                options: ["absolutely", "highly", "very", "a little"],
+                correct: "absolutely",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Chúng ta có thể thuyết phục thêm nhiều người đi xe buýt, nhưng việc ngăn cấm hoàn toàn người dân lái xe ô tô là điều hoàn toàn không thể xảy ra.<br><strong>2. Phân tích tính từ tuyệt đối và trạng từ đi kèm:</strong><br>A. absolutely (adv): hoàn toàn, tuyệt đối; B. highly (adv): rất; C. very (adv): rất; D. a little (adv): một chút<br><strong>3. Tại sao chọn A:</strong> Tính từ 'impossible' (không thể) là một tính từ tuyệt đối bất biến (ungradable adjective). Quy tắc ngữ pháp quy định ta bắt buộc phải dùng trạng từ cực độ <em>'absolutely'</em> đi kèm để nhấn mạnh tính từ tuyệt đối này (absolutely impossible).<br><strong>4. Tại sao các từ khác sai:</strong> Các trạng từ highly, very, a little chỉ được phép bổ nghĩa cho các tính từ có thể phân chia cấp độ (gradable adjectives) như hot, difficult, cold... không đi với từ mang nghĩa tuyệt đối như impossible."
+            },
+            {
+                id: 19,
+                question: "There were losses in the car industry last year ________ the tourism industry boomed.",
+                options: ["in addition", "because", "similarly", "while"],
+                correct: "while",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Đã có những khoản thua lỗ nặng nề trong ngành công nghiệp ô tô vào năm ngoái trong khi ngành du lịch lại bùng nổ vượt bậc.<br><strong>2. Phân tích từ nối liên kết vế câu:</strong><br>A. in addition: thêm vào đó; B. because: bởi vì chỉ nguyên nhân<br>C. similarly: tương tự như vậy; D. while: trong khi đó (diễn tả sự tương phản song hành)<br><strong>3. Tại sao chọn D:</strong> Hai vế của câu chứa đựng hai trạng thái hoàn toàn trái ngược, đối lập gay gắt: một bên gặp thua lỗ (losses), một bên phát triển bùng nổ (boomed). Liên từ <em>'while'</em> là lựa chọn hoàn hảo nhất để kết nối sự tương phản này.<br><strong>4. Tại sao các từ khác sai:</strong> 'in addition' và 'similarly' dùng cho thông tin đồng thuận cùng chiều; 'because' sai logic quan hệ nhân quả."
+            },
+            {
+                id: 20,
+                question: "We made a significant profit last year ________ the losses made by our international office.",
+                options: ["although", "despite", "however", "as a result"],
+                correct: "despite",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Chúng tôi đã gặt hái được khoản lợi nhuận lớn vào năm ngoái bất chấp những khoản thua lỗ do văn phòng quốc tế gây ra.<br><strong>2. Phân tích cấu trúc ngữ pháp sau từ nối:</strong><br>A. although: mặc dù (cộng mệnh đề S + V); B. despite: bất chấp (cộng cụm danh từ / V-ing)<br>C. however: tuy nhiên; D. as a result: kết quả là<br><strong>3. Tại sao chọn B:</strong> Thành phần đứng ngay sau vị trí trống là một cụm danh từ trọn vẹn <em>'the losses made by our international office'</em>. Theo luật ngữ pháp, từ nối chỉ sự nhượng bộ đứng trước một cụm danh từ phải là giới từ 'despite'.<br><strong>4. Tại sao các từ khác sai:</strong> 'although' bắt buộc phải có cấu trúc mệnh đề gồm Chủ ngữ + Động từ đi sau; 'however' và 'as a result' là trạng từ liên kết luôn có dấu phẩy đi kèm khi đứng giữa câu nối ý."
+            },
+            {
+                id: 21,
+                question: "I think school holidays are too long, ________ I do think that children need more breaks than adults.",
+                options: ["despite", "in spite of", "although", "furthermore"],
+                correct: "although",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Tôi nghĩ kỳ nghỉ hè của học sinh quá dài, mặc dù tôi thực sự nghĩ rằng trẻ em cần có nhiều quãng nghỉ ngơi hơn người lớn.<br><strong>2. Phân tích cấu trúc ngữ pháp sau từ nối:</strong><br>A. despite (mặc dù - cộng cụm danh từ); B. in spite of (mặc dù - cộng cụm danh từ)<br>C. although (mặc dù - cộng mệnh đề S + V); D. furthermore (hơn nữa)<br><strong>3. Tại sao chọn C:</strong> Phía sau chỗ trống là một mệnh đề hoàn chỉnh chứa đủ Chủ ngữ và Động từ: <em>'I (S) do think (V)...'</em>. Do đó ta bắt buộc phải dùng liên từ 'although' để nối câu.<br><strong>4. Tại sao các từ khác sai:</strong> 'despite' và 'in spite of' vi phạm quy tắc vì không được phép đứng trước một mệnh đề; 'furthermore' diễn tả ý thêm vào bổ sung, không lột tả được sắc thái mâu thuẫn đối lập nhẹ giữa hai vế."
+            },
+            {
+                id: 22,
+                question: "________ I believe that banning smokers from public places is a very good idea.",
+                options: ["Clearly", "Fortunately", "Justifiably", "Personally"],
+                correct: "Personally",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Cá nhân tôi tin rằng việc cấm những người hút thuốc tại các địa điểm công cộng là một ý tưởng rất tuyệt vời.<br><strong>2. Phân tích ý nghĩa trạng từ chêm đầu câu:</strong><br>A. Clearly: Rõ ràng là; B. Fortunately: May mắn thay<br>C. Justifiably: Một cách chính đáng; D. Personally: Mang tính chất cá nhân tôi<br><strong>3. Tại sao chọn D:</strong> Trạng từ <em>'Personally'</em> luôn đứng đầu câu và tạo thành một cấu trúc nói bày tỏ quan điểm cá nhân vô cùng quen thuộc: 'Personally, I believe / I think...' nhằm nhấn mạnh đây là góc nhìn chủ quan của người nói.<br><strong>4. Tại sao các từ khác sai:</strong> Các trạng từ còn lại không kết hợp mượt mà và tự nhiên với động từ bày tỏ đức tin cá nhân 'I believe' ở đầu câu xét theo thói quen ngôn ngữ."
+            },
+            {
+                id: 23,
+                question: "A ________ study has shown that fewer children are taking up smoking.",
+                options: ["recnet", "recent", "crescent", "resent"],
+                correct: "recent",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Một nghiên cứu gần đây đã chỉ ra rằng ngày càng có ít trẻ em bắt đầu tập tành hút thuốc hơn.<br><strong>2. Phân tích lỗi chính tả và nghĩa từ vựng:</strong><br>A. recnet (sai lỗi chính tả đảo chữ); B. recent (adj): mới diễn ra gần đây (viết đúng chính tả)<br>C. crescent (n): hình trăng lưỡi liềm; D. resent (v): bực tức, oán giận<br><strong>3. Tại sao chọn B:</strong> Vị trí giữa mạo từ 'A' và danh từ 'study' cần một tính từ bổ nghĩa thông tin cập nhật cho bài nghiên cứu. Tính từ viết chính xác là <em>'recent'</em>.<br><strong>4. Tại sao các từ khác sai:</strong> A viết sai chính tả; C và D là những từ vựng mang tầng ý nghĩa hoàn toàn xa lạ, lạc đề ngữ cảnh câu."
+            },
+            {
+                id: 24,
+                question: "The female birds eat very little food ________ the males.",
+                options: ["comparing to", "compared to", "comparing with", "comparing"],
+                correct: "compared to",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Những con chim mái ăn rất ít thức ăn khi đem so sánh với những con chim trống.<br><strong>2. Phân tích cấu trúc phân từ rút gọn so sánh:</strong><br>A. comparing to; B. compared to (khi được đem ra so sánh với)<br>C. comparing with; D. comparing<br><strong>3. Tại sao chọn B:</strong> Ta có cấu trúc rút gọn mệnh đề mang tính bị động cố định dùng để làm cán cân đối chiếu hai chủ thể là cụm: <em>'compared to / compared with something'</em>.<br><strong>4. Tại sao các từ khác sai:</strong> Dạng đuôi '-ing' (comparing) mang tính chất chủ động (tự thân đi so sánh vật khác), sai lệch hoàn toàn bản chất ngữ pháp của cấu trúc so sánh đối chiếu."
+            },
+            {
+                id: 25,
+                question: "Generally speaking, ________ have totally different interests from older people.",
+                options: ["kids", "guys", "youth", "the young"],
+                correct: "the young",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Nói một cách tổng quát, người trẻ tuổi có những sở thích hoàn toàn khác biệt so với những người lớn tuổi.<br><strong>2. Phân tích danh từ tập hợp số nhiều:</strong><br>A. kids (trẻ con); B. guys (mọi người/mấy cậu); C. youth (thanh xuân/giới trẻ số ít)<br>D. the young (danh từ tập hợp chỉ nhóm người trẻ tuổi nói chung)<br><strong>3. Tại sao chọn D:</strong> Động từ ở vế sau chia ở dạng số nhiều nguyên mẫu là <em>'have'</em>. Đồng thời câu mang sắc thái nghị luận trang trọng đối lập với cụm từ 'older people'. Theo quy tắc, 'The + Tính từ = Danh từ tập hợp số nhiều', vì vậy 'the young' làm chủ ngữ số nhiều là chuẩn xác nhất.<br><strong>4. Tại sao các từ khác sai:</strong> 'kids' và 'guys' mang sắc thái quá suồng sã, thân mật trong giao tiếp đời thường, không hợp văn phong nghị luận; 'youth' chỉ giới trẻ mang tính trừu tượng số ít không đi với động từ số nhiều 'have' trong ngữ cảnh song hành đối lập này."
+            },
+            {
+                id: 26,
+                question: "I am writing to ________ for the position of tour guide advertised in your newsletter.",
+                options: ["application", "apply", "invitation", "invite"],
+                correct: "apply",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Tôi viết thư này để ứng tuyển vào vị trí hướng dẫn viên du lịch được quảng cáo trên bản tin của quý công ty.<br><strong>2. Phân tích từ loại và cấu trúc động từ:</strong><br>A. application (n): đơn xin việc; B. apply (v): nộp đơn ứng tuyển (đi với giới từ for)<br>C. invitation (n): lời mời; D. invite (v): mời mọc<br><strong>3. Tại sao chọn B:</strong> Đằng sau từ chỉ mục đích 'to' (để làm gì) ta bắt buộc phải dùng một động từ ở dạng nguyên mẫu. Ta áp dụng cấu trúc cụm từ đi tìm việc làm quen thuộc: <em>'apply for a job / position'</em>.<br><strong>4. Tại sao các từ khác sai:</strong> A và C sai từ loại danh từ; D 'invite' mang ý nghĩa mời khách đến chơi, ngược dòng hoàn toàn với ngữ cảnh viết thư xin việc."
+            },
+            {
+                id: 27,
+                question: "I would be ________ if you could send me a brochure.",
+                options: ["greatful", "gratefull", "grateful", "greatfull"],
+                correct: "grateful",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Tôi sẽ rất biết ơn nếu bạn có thể gửi cho tôi một cuốn sách nhỏ giới thiệu thông tin quảng cáo.<br><strong>2. Phân tích chính tả từ vựng:</strong><br>Từ đúng chính tả duy nhất trong tiếng Anh mang nghĩa biết ơn là <em>'grateful'</em> (bắt đầu bằng cụm g-r-a-t-e).<br><strong>3. Tại sao chọn C:</strong> 'grateful' là tính từ đi sau hệ động từ tobe 'be' để tạo nên câu đề nghị vô cùng lịch sự trong viết thư thương mại: 'I would be grateful if you could...'.<br><strong>4. Tại sao các từ khác sai:</strong> Các phương án A, B, D đều là những biến thể viết sai chính tả cực kỳ phổ biến do học sinh tiểu học bị tư duy nhầm lẫn ăn theo từ 'great' (to lớn)."
+            },
+            {
+                id: 28,
+                question: "I really must apologise ________ the way that I behaved during my stay at the hotel.",
+                options: ["by", "for", "of", "to"],
+                correct: "for",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Tôi thực sự phải gửi lời xin lỗi chân thành vì cách cư xử của mình trong suốt thời gian lưu trú tại khách sạn.<br><strong>2. Phân tích giới từ đi kèm động từ apologise:</strong><br>Các giới từ đi kèm: by, for, of, to.<br><strong>3. Tại sao chọn B:</strong> Quy chuẩn ngữ pháp tiếng Anh quy định cấu trúc: <em>'apologise FOR something'</em> có nghĩa là xin lỗi vì một sự việc, hành vi sai trái nào đó đã gây ra.<br><strong>4. Tại sao các từ khác sai:</strong> Apologise không đi với giới từ by hay of; nếu đi với giới từ 'to' thì bắt buộc phải tuân theo cấu trúc 'apologise TO someone' (xin lỗi một ai đó cụ thể), ở đây 'the way...' là sự việc nên dùng to là sai."
+            },
+            {
+                id: 29,
+                question: "I ________ like to accept your kind offer of a free meal in your restaurant.",
+                options: ["could", "can", "will", "would"],
+                correct: "would",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Tôi rất muốn được đón nhận lời mời tử tế của bạn về một bữa ăn miễn phí tại nhà hàng của bạn.<br><strong>2. Phân tích cấu trúc trợ động từ khuyết thiếu:</strong><br>Các trợ động từ khuyết thiếu lựa chọn: could, can, will, would.<br><strong>3. Tại sao chọn D:</strong> Trong câu xuất hiện cụm đuôi 'like to accept'. Ta áp dụng mẫu câu bày tỏ mong muốn, sở thích một cách lịch sự, trang trọng là: <em>'would like to do something'</em> (viết tắt trong bài đọc giao tiếp là I'd like to).<br><strong>4. Tại sao các từ khác sai:</strong> Các trợ động từ can, could, will khi lắp vào trước 'like to' không tạo ra một cấu trúc ngữ pháp có nghĩa mang sắc thái đề nghị lịch sự tương tự."
+            },
+            {
+                id: 30,
+                question: "I am really looking forward ________ you again soon.",
+                options: ["to seeing", "to see", "seeing", "see"],
+                correct: "to seeing",
+                explanation: "<strong>1. Dịch nghĩa câu hỏi:</strong> Tôi thực sự rất mong chờ, trông ngóng sớm được gặp lại bạn một lần nữa.<br><strong>2. Phân tích cấu trúc cụm động từ đặc biệt:</strong><br>A. to seeing (to + V-ing); B. to see (to + V nguyên mẫu); C. seeing (V-ing); D. see (V nguyên mẫu)<br><strong>3. Tại sao chọn A:</strong> Ta áp dụng cấu trúc ngữ pháp kinh điển thuộc lòng: <em>'look forward TO + V-ing / Noun'</em> (mong đợi điều gì). Chữ 'to' ở đây đóng vai trò bản chất là một giới từ mục tiêu, theo sau giới từ bắt buộc động từ phải biến đổi thành dạng danh động từ đuôi -ing (seeing).<br><strong>4. Tại sao các từ khác sai:</strong> Phương án B là bẫy sai phổ biến nhất vì học sinh cứ nghĩ sau 'to' là động từ nguyên mẫu; C và D thiếu mất từ 'to' cốt lõi của cấu trúc gốc."
+            }
+        ];
+
+        let userAnswersState = {};
+
+        // Thuật toán đảo vị trí mảng ngẫu nhiên (Fisher-Yates Shuffle) cho các đáp án A B C D tăng tính khách quan mỗi lần học sinh tải trang
+        function shuffleOptions(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Hàm sinh cây giao diện HTML tự động từ kho dữ liệu gốc toàn vẹn
+        function initQuizLayout() {
+            const containerArea = document.getElementById('quiz-container');
+            containerArea.innerHTML = "";
+
+            quizDatabase.forEach((q, index) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `question-card-${q.id}`;
+
+                // Tạo bản sao và đảo ngẫu nhiên các phương án đáp án để chống học vẹt
+                let optionsCopy = [...q.options];
+                shuffleOptions(optionsCopy);
+
+                let optionsMarkup = `<div class="options-list">`;
+                optionsCopy.forEach((optText, optIdx) => {
+                    const letters = ["A", "B", "C", "D"];
+                    const isTheCorrectOne = (optText === q.correct);
+                    optionsMarkup += `
+                        <button class="option-btn" data-correct="${isTheCorrectOne}" onclick="evaluateInstantChoice(this, ${q.id})">
+                            <strong>${letters[optIdx]}.</strong> ${optText}
+                        </button>
+                    `;
+                });
+                optionsMarkup += `</div>`;
+
+                card.innerHTML = `
+                    <div class="card-top-info">Câu hỏi số ${index + 1} / 30</div>
+                    <div class="question-text">${q.question}</div>
+                    ${optionsMarkup}
+                    <div class="explanation-box" id="explanation-box-${q.id}">
+                        <div class="explanation-title">💡 PHẦN GIẢI THÍCH CHI TIẾT TỪ MS LÊ HẰNG ENGLISH:</div>
+                        <div class="explanation-content">${q.explanation}</div>
+                    </div>
+                `;
+                containerArea.appendChild(card);
+            });
+        }
+
+        // Xử lý chấm điểm tức thì phản hồi màu sắc Xanh/Đỏ ngay khi bấm chọn để xem giải thích
+        function evaluateInstantChoice(clickedButton, questionId) {
+            // Nếu câu này con đã bấm rồi thì khóa lại không cho đổi ý gian lận
+            if (userAnswersState[questionId] !== undefined) return;
+
+            const isCorrect = clickedButton.getAttribute('data-correct') === 'true';
+            userAnswersState[questionId] = isCorrect;
+
+            const currentCard = document.getElementById(`question-card-${questionId}`);
+            const allButtonsInCard = currentCard.querySelectorAll('.option-btn');
+
+            if (isCorrect) {
+                // ĐÚNG: Hóa xanh lá cây, nổ tiếng Ding vui tai, bắn pháo giấy bung nở
+                clickedButton.classList.add('correct');
+                playSoundEffect('correct');
+                burstConfettiParticles();
+            } else {
+                // SAI: Hóa đỏ cam, thẻ bài câu hỏi rung lắc mạnh mẽ, nổ tiếng Téo teo tèo buồn bã
+                clickedButton.classList.add('wrong');
+                currentCard.classList.add('shake-animation');
+                playSoundEffect('wrong');
+
+                // Tự động tìm và làm nổi bật đáp án đúng lên cho học sinh đối chiếu rút kinh nghiệm
+                allButtonsInCard.forEach(btn => {
+                    if (btn.getAttribute('data-correct') === 'true') {
+                        btn.classList.add('correct');
+                    }
+                });
+
+                // Xóa bỏ hiệu ứng rung lắc sau khi kết thúc animation để giao diện ổn định
+                setTimeout(() => {
+                    currentCard.classList.remove('shake-animation');
+                }, 450);
+            }
+
+            // Khóa cứng toàn bộ các lựa chọn nút bấm của câu này lại
+            allButtonsInCard.forEach(btn => btn.classList.add('disabled'));
+
+            // TỰ ĐỘNG HIỆN KHUNG GIẢI THÍCH NGAY LẬP TỨC CHO HỌC SINH ĐỌC GHI CHÉP
+            document.getElementById(`explanation-box-${questionId}`).style.display = "block";
+        }
+
+        // Hệ thống Canvas sinh hiệu ứng bắn pháo giấy Confetti mừng câu trả lời đúng lung linh
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function burstConfettiParticles() {
+            const vibrantColors = ['#8854C0', '#FDCB6E', '#00C9A7', '#FF4757', '#00D26A', '#FFFFFF'];
+            for (let i = 0; i < 45; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    size: Math.random() * 6 + 6,
+                    color: vibrantColors[Math.floor(Math.random() * vibrantColors.length)],
+                    speedX: Math.random() * 4 - 2,
+                    speedY: Math.random() * 4 + 4,
+                    rotation: Math.random() * 360,
+                    rotationSpeed: Math.random() * 4 - 2
+                });
+            }
+        }
+
+        function updateAndRenderConfetti() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, index) => {
+                p.x += p.speedX;
+                p.y += p.speedY;
+                p.rotation += p.rotationSpeed;
+
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate((p.rotation * Math.PI) / 180);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                ctx.restore();
+
+                // Dọn dẹp các hạt rơi khỏi màn hình để bảo toàn tài nguyên Ram
+                if (p.y > canvas.height) {
+                    particles.splice(index, 1);
+                }
+            });
+            requestAnimationFrame(updateAndRenderConfetti);
+        }
+        requestAnimationFrame(updateAndRenderConfetti);
+
+        // Logic tổng kết điểm số cuối cùng khi học sinh bấm nút "Nộp bài" cuối trang
+        function calculateFinalScore() {
+            let totalQuestions = quizDatabase.length;
+            let correctCount = 0;
+
+            quizDatabase.forEach(q => {
+                if (userAnswersState[q.id] === true) {
+                    correctCount++;
+                }
+            });
+
+            let finalPercentage = (correctCount / totalQuestions) * 100;
+            let teacherAdviceMessage = "";
+
+            if (finalPercentage < 50) {
+                teacherAdviceMessage = "Điểm lần này chưa cao lắm, con cố gắng đọc kỹ giải thích đáp án và làm lại nha. Cô tin con sẽ làm tốt hơn ở lần sau!";
+            } else if (finalPercentage >= 60 && finalPercentage <= 80) {
+                teacherAdviceMessage = "Con đã có tiến bộ khá ổn rồi, con cố gắng đọc kỹ giải thích đáp án và làm lại nha. Cô tin con sẽ làm tốt hơn ở lần sau!";
+            } else if (finalPercentage >= 90) {
+                teacherAdviceMessage = "Làm tốt lắm, con cố gắng ring điểm 10 ở lần sau nha!";
+            } else {
+                // Trường hợp khoảng đệm từ 50% đến 60%
+                teacherAdviceMessage = "Con đã rất nỗ lực cố gắng làm bài rồi! Hãy chú ý ghi chú lại các cấu trúc ngữ pháp cô đọng ở khung giải thích để bứt phá điểm 10 tuyệt đối ở lần sau nhé!";
+            }
+
+            // Ghi dữ liệu trực tiếp vào thẻ Popup kết quả công bố
+            document.getElementById('score-text').innerText = `${correctCount} / ${totalQuestions}`;
+            document.getElementById('feedback-text').innerText = teacherAdviceMessage;
+
+            // Kích hoạt hiển thị popup lung linh ra giữa màn hình nền mờ
+            document.getElementById('score-modal').classList.add('active');
+
+            // Bắn một loạt pháo hoa ăn mừng rực rỡ nếu con đạt kết quả cao xuất sắc từ 80% trở lên
+            if (finalPercentage >= 80) {
+                for (let step = 0; step < 4; step++) {
+                    setTimeout(burstConfettiParticles, step * 250);
+                }
+            }
+        }
+
+        // Khởi động lại làm bài mới tinh
+        function restartQuiz() {
+            userAnswersState = {};
+            particles = [];
+            document.getElementById('score-modal').classList.remove('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // Cuộn mượt mà lên đầu trang
+            setTimeout(initQuizLayout, 400); // Sinh lại bộ câu hỏi và xáo đáp án mới tinh
+        }
+
+        // Tự động khởi chạy kết xuất bảng câu hỏi ngay khi trang web tải xong toàn vẹn tài nguyên
+        window.onload = function() {
+            initQuizLayout();
+        };
+    </script>
+</body>
+</html>
